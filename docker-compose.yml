@@ -23,26 +23,30 @@ services:
           - ./src/composer.json:/var/www/html/composer.json
       environment:
         ENVIRONMENT: dev
-        DB_DRIVER: mysql
+        LANG: C.UTF-8
+        DB_DRIVER: pgsql
         DB_SERVER: database
-        DB_USER: project
+        DB_USER: craft
         DB_PASSWORD: project
-        DB_DATABASE: project
-        DB_TABLE_PREFIX: craft_
+        DB_DATABASE: craft
+        PGPASSWORD: secret
+        DB_SCHEMA: public
+        DB_PORT: '5432'
+        DB_TABLE_PREFIX: ""
         SITE_URL: http://localhost
         SECURITY_KEY: asdfasdfasdfasdfasdf
 
   database:
-      image: mariadb:10.3
+      image: postgres:10.6
       volumes:
-          - db-data:/var/lib/mysql
+          - postgresql-data:/var/lib/postgresql/data
       ports:
-          - 3306:3306
+          - 3306:5432
       environment:
-          MYSQL_ROOT_PASSWORD: secret
-          MYSQL_DATABASE: project
-          MYSQL_USER: project
-          MYSQL_PASSWORD: project
+          POSTGRES_USER: craft
+          POSTGRES_PASSWORD: project
+          POSTGRES_DB: craft
+          POSTGRES_INITDB_ARGS: "-E UTF8"
 
   phpmyadmin:
       image: phpmyadmin/phpmyadmin
@@ -52,4 +56,4 @@ services:
           PMA_HOST: database
 
 volumes:
-  db-data:
+  postgresql-data:
